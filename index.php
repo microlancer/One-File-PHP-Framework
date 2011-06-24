@@ -2,6 +2,8 @@
 /**
  * One-File PHP Framework. Because you don't need all that crap.
  * Be sure your .htaccess maps everything to index.php?q=$1
+ *
+ * @author Tim Horie <tak@thorie.com>
 */
 
 /**
