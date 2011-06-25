@@ -1,9 +1,21 @@
 <?php
 /**
  * One-File PHP Framework. Because you don't need all that crap.
+ * @author Tim Horie <tak@thorie.com>
+ *
  * Be sure your .htaccess maps everything to index.php?q=$1
  *
- * @author Tim Horie <tak@thorie.com>
+ * Example:
+ * <IfModule mod_rewrite.c>
+ *     RewriteEngine On
+ *     RewriteBase /
+ *     RewriteCond %{REQUEST_FILENAME} !-f
+ *     RewriteCond %{REQUEST_FILENAME} !-d
+ *     RewriteCond $1 !^(index\.php|media|stats)
+ *     RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
+ * </IfModule>
+ *
+ *
 */
 
 /**
@@ -23,15 +35,15 @@ class Config
 	{
 		return array(
 			'Home' => self::BASE_URL . '/',
-			'View Latest (Version ' . self::LATEST_VERSION . ')' => self::BASE_URL . 
+			'View Latest (Version ' . self::LATEST_VERSION . ')' => self::BASE_URL .
 				'/download/view?version=' . self::LATEST_VERSION,
-			'Download Latest' => self::BASE_URL . 
+			'Download Latest' => self::BASE_URL .
 				'/download/get?version=' . self::LATEST_VERSION,
 		);
 	}
 }
 
-/** 
+/**
  * Bootstrap
 */
 
@@ -59,12 +71,12 @@ class Bootstrap
 			$requestPath = '/';
 		}
 		list($modelName, $actionName) = explode("/", $requestPath);
-		if (!$modelName) { 
-			$modelName = 'default'; 
+		if (!$modelName) {
+			$modelName = 'default';
 		}
 		$modelName = ucwords($modelName) . 'Controller';
-		if (!$actionName) { 
-			$actionName = 'default'; 	
+		if (!$actionName) {
+			$actionName = 'default';
 		}
 		$actionName .= 'Action';
 		$controller = new $modelName;
@@ -92,7 +104,7 @@ class BaseController
 		$vars['fw_ver'] = Config::LATEST_VERSION;
 
 		// Render header as a panel.
-		$vars += $this->getHeaderVars();	
+		$vars += $this->getHeaderVars();
 		$vars['header'] = HeaderView::render($vars);
 
 		// Render footer as a panel.
@@ -132,7 +144,7 @@ class DefaultController extends BaseController
 	public function defaultAction($request)
 	{
 		$vars = array();
-		parent::render($vars);	
+		parent::render($vars);
 	}
 }
 
@@ -148,11 +160,11 @@ class DownloadController extends BaseController
 			throw new Exception("No such version.");
 		}
 		$vars = array(
-			'codeblock' => "<div style='height:50%;overflow:scroll'><pre>" . 
-				htmlentities(file_get_contents($filename), ENT_QUOTES) . 
+			'codeblock' => "<div style='height:50%;overflow:scroll'><pre>" .
+				htmlentities(file_get_contents($filename), ENT_QUOTES) .
 				"</pre></div>",
 		);
-			
+
 		parent::render($vars, 'download');
 	}
 }
@@ -236,14 +248,14 @@ class DefaultView extends BaseView
 <p>Many frameworks these days have a myriad of directories and files meant to organize and separate your code so it's theoretically more manageable. But the reality is, without discipline, you can still build a giant mess on even the cleanest framework. If you have discipline, you can have clean manageable code. Even if it's all in one file.
 <p>The One-File PHP Framework is just one index.php file (with the help of one .htaccess file). It's fully MVC. It has a configuration system and a bootstrap. The controllers are defined near the top, the models in the middle, and the views last.
 <h2>Performance</h2>
-<p>Q. What if my site grows large and unwieldy and all the code is in one file? 
+<p>Q. What if my site grows large and unwieldy and all the code is in one file?
 <p>A. Well, if that's the case you probably don't know what you're doing and duplicating a lot of code. If it's truly minimal, it should fit into one file. Use inheritance. Write better classes. Eliminate overhead code. If your views are getting large, it may be time to think about storing your views in a database. The default .htaccess file shipped with the One-File PHP Framework has a rewrite rule that will let you store static content (like CSS, Javascript) into the /media folder. This whole site is built on one index.php file that is less than 300 lines long.
 <h2>Editing</h2>
 <p>Q. Isn't it difficult to edit one file?
 <p>A. On the contrary, it's easier to search for things and make changes.
 <p>Q. What if you have a designer who needs to style the view?
 <p>A. Then you should clean up your code and build an interface for your designer to edit the view without a need to edit the source code.
-<p>Q. What about version control? 
+<p>Q. What about version control?
 <p>A. You need to have the discipline to properly describe your changes in the log. Also, most popular systems have decent diff'ing capabilities.
 </div>
 {$vars['footer']}
