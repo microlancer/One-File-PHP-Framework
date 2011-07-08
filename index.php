@@ -15,6 +15,7 @@
  *     RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
  * </IfModule>
  *
+ * Dev Version
  *
 */
 
